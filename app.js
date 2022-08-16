@@ -1,57 +1,69 @@
-import chalk from 'chalk';
-import notes from './notes.js';
-// import yargs from 'yargs';
-const yargs=require('yargs');
-yargs
-    .command({
-        command:'add',
-        describe:'Adding command',
-        handler: argv => {
-            console.log('Adding notes');
+
+import yargs from 'yargs';
+import {hideBin} from 'yargs/helpers'
+import notes from './notes.js'
+const y=yargs(hideBin(process.argv));
+// Customize y version
+y.version('1.1.0')
+y.command({
+    command: 'add',
+    describe: 'Add a new note',
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        },
+        body: {
+            describe: 'Note body',
+            demandOption: true,
+            type: 'string'
         }
-    })
-    .parse();
-// import chalk from 'chalk'
-// import { version, command } from 'yargs'
-// import getNotes from './notes.js'
+    },
+    handler(argv) {
+        notes.addNote(argv.title, argv.body)
+    }
+})
 
-// // Customize yargs version
-// version('1.1.0')
+// Create remove command
+y.command({
+    command: 'remove',
+    describe: 'Remove a note',
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        notes.removeNote(argv.title)
+    }
+})
 
-// // Create add command
-// command({
-//     command: 'add',
-//     describe: 'Add a new note',
-//     handler: function () {
-//         console.log('Adding a new note!')
-//     }
-// })
+// Create list command
+y.command({ 
+    command: 'list',
+    describe: 'List your n otes',
+    handler() {
+        notes.listNotes()
+    }
+})
 
-// // Create remove command
-// command({
-//     command: 'remove',
-//     describe: 'Remove a note',
-//     handler: function () {
-//         console.log('Removing the note')
-//     }
-// })
+// Create read command
+y.command({
+    command: 'read',
+    describe: 'Read a note',
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        notes.readNotes(argv.title)
+    }
+})
 
-// // Create list command
-// command({
-//     command: 'list',
-//     describe: 'List your notes',
-//     handler: function () {
-//         console.log('Listing out all notes')
-//     }
-// })
-
-// // Create read command
-// command({
-//     command: 'read',
-//     describe: 'Read a note',
-//     handler: function () {
-//         console.log('Reading a note')
-//     }
-// })
-
-// console.log(argv)
+y.parse()
